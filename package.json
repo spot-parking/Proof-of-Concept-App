@@ -18,5 +18,10 @@
   "license": "CC0-1.0",
   "devDependencies": {
     "electron": "~1.7.8"
+  },
+  "dependencies": {
+    "bluebird": "^3.5.1",
+    "moment": "^2.20.1",
+    "pi-camera": "^1.0.1"
   }
 }
