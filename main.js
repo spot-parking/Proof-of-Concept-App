@@ -7,7 +7,7 @@ const BrowserWindow = electron.BrowserWindow;
 const path = require('path');
 const url = require('url');
 
-const camera = require('./lib/util/image-processing.js').camera;
+const imageProcessingUtil = require('./lib/util/image-processing.js');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
