@@ -7,7 +7,9 @@ function triggerCamera() {
     imageProcessingUtil
         .snapPhoto()
         .then(imageBuffer => {
-            window.alert(`Image Captured!`);
+            window.alert(`Image Captured!\n${JSON.stringify(imageBuffer, null, 4)}`);
+
+            // document.
         })
         .catch(error => {
             window.alert(JSON.stringify(error));
