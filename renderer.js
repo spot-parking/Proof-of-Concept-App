@@ -9,7 +9,9 @@ function triggerCamera() {
         .then(imageBuffer => {
             window.alert(`Image Captured!\n${JSON.stringify(imageBuffer, null, 4)}`);
 
-            // document.
+            document
+                .querySelector('#image-window')
+                .setAttribute('src', imageBuffer.toString('base64'));
         })
         .catch(error => {
             window.alert(JSON.stringify(error));
