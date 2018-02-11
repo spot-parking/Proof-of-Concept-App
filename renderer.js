@@ -4,18 +4,30 @@
 const imageProcessingUtil = require('./lib/util/image-processing.js');
 
 function triggerCamera() {
+    let cameraBtn = document
+        .querySelector('#camera-btn');
+
+    cameraBtn
+        .setAttribute('disabled', true);
+    cameraBtn
+        .setAttribute('value', `Capturing image...`);
+
     imageProcessingUtil
         .snapPhoto()
         .then(imageBuffer => {
-            window.alert(`Image Captured!\n${JSON.stringify(imageBuffer, null, 4)}`);
+            // document
+            //     .querySelector('#image-window')
+            //     .setAttribute('src', imageBuffer.toString('base64'));
 
-            document
-                .querySelector('#image-window')
-                .setAttribute('src', imageBuffer.toString('base64'));
+            cameraBtn
+                .setAttribute('disabled', false);
+
+            cameraBtn
+                .setAttribute('value', `Take photo`);
         })
         .catch(error => {
             window.alert(JSON.stringify(error));
-        })
+        });
 }
 
 document
