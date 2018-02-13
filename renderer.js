@@ -9,7 +9,7 @@ const cameraBtn = document.querySelector('#camera-btn');
 const logDisplay = document.querySelector('#log-console');
 
 function triggerCamera() {
-    cameraBtn.setAttribute('disabled', true);
+    cameraBtn.setAttribute('disabled', 'true');
 
     log(`Capturing image...`);
 
@@ -19,11 +19,11 @@ function triggerCamera() {
             log(`Captured image, sending to cloud for analysis...`);
             // imageDisplay.setAttribute('src', `data:image/jpeg;base64,${imageBuffer.toString('base64')}`);
             // TODO Send to cloud.
-            cameraBtn.setAttribute('disabled', false);
+            cameraBtn.removeAttribute('disabled');
         })
         .catch(error => {
             log(`Error encountered while taking photo!\n${JSON.stringify(error, null, 4)}`);
-            cameraBtn.setAttribute('disabled', false);
+            cameraBtn.removeAttribute('disabled');
         });
 }
 
