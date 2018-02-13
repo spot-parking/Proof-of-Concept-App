@@ -4,29 +4,27 @@
 const imageProcessingUtil = require('./lib/util/image-processing.js');
 
 function triggerCamera() {
-    let cameraBtn = document
-        .querySelector('#camera-btn');
+    let cameraBtn = document.querySelector('#camera-btn');
+    let logDisplay = document.querySelector('#log-console');
 
-    cameraBtn
-        .setAttribute('disabled', true);
-    cameraBtn
-        .setAttribute('value', `Capturing image...`);
+    cameraBtn.setAttribute('disabled', true);
+    logDisplay.appendChild(document.createTextNode(`Capturing image...`));
+    logDisplay.appendChild(document.createElement('br'));
 
     imageProcessingUtil
         .snapPhoto()
         .then(imageBuffer => {
-            // document
-            //     .querySelector('#image-window')
-            //     .setAttribute('src', imageBuffer.toString('base64'));
-
-            cameraBtn
-                .setAttribute('disabled', false);
-
-            cameraBtn
-                .setAttribute('value', `Take photo`);
+            let imgElement = document.createElement('img');
+            imgElement.setAttribute('src', `data:image/jpeg;base64,${imageBuffer.toString('base64')}`);
+            logDisplay.appendChild(imgElement);
+            logDisplay.appendChild(document.createElement('br'));
         })
         .catch(error => {
-            window.alert(JSON.stringify(error));
+            logDisplay.appendChild(document.createTextNode(`Error encountered while taking photo!\n${JSON.stringify(error, null, 4)}`));
+            logDisplay.appendChild(document.createElement('br'));
+        })
+        .finally(() => {
+            cameraBtn.setAttribute('disabled', false);
         });
 }
 
