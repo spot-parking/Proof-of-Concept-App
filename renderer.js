@@ -1,7 +1,7 @@
 // This file is required by the index.html file and will
 // be executed in the renderer process for that window.
 // All of the Node.js APIs are available in this process.
-const imageProcessingUtil = require('./lib/util/image-processing.js');
+const camera = require('./lib/util/camera.js');
 const request = require('request-promise');
 
 const cameraBtn = document.querySelector('#camera-btn');
@@ -13,7 +13,7 @@ function triggerCamera() {
 
     log(`Capturing image...`);
 
-    imageProcessingUtil
+    camera
         .snapPhoto()
         .then(imageBuffer => {
             log(`Captured image, sending to cloud for analysis...`);
