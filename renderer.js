@@ -19,12 +19,10 @@ function triggerCamera() {
             log(`Captured image, sending to cloud for analysis...`);
             // imageDisplay.setAttribute('src', `data:image/jpeg;base64,${imageBuffer.toString('base64')}`);
             // TODO Send to cloud.
-            return true;
+            cameraBtn.setAttribute('disabled', false);
         })
         .catch(error => {
             log(`Error encountered while taking photo!\n${JSON.stringify(error, null, 4)}`);
-        })
-        .finally(() => {
             cameraBtn.setAttribute('disabled', false);
         });
 }
