@@ -3,29 +3,33 @@
 // All of the Node.js APIs are available in this process.
 const imageProcessingUtil = require('./lib/util/image-processing.js');
 
-function triggerCamera() {
-    let cameraBtn = document.querySelector('#camera-btn');
-    let logDisplay = document.querySelector('#log-console');
+const cameraBtn = document.querySelector('#camera-btn');
+const imageDisplay = document.querySelector('#image-window');
+const logDisplay = document.querySelector('#log-console');
 
+function triggerCamera() {
     cameraBtn.setAttribute('disabled', true);
-    logDisplay.appendChild(document.createTextNode(`Capturing image...`));
-    logDisplay.appendChild(document.createElement('br'));
+
+    log(`Capturing image...`);
 
     imageProcessingUtil
         .snapPhoto()
         .then(imageBuffer => {
-            let imgElement = document.createElement('img');
-            imgElement.setAttribute('src', `data:image/jpeg;base64,${imageBuffer.toString('base64')}`);
-            logDisplay.appendChild(imgElement);
-            logDisplay.appendChild(document.createElement('br'));
+            imageDisplay.setAttribute('src', `data:image/jpeg;base64,${imageBuffer.toString('base64')}`);
+
+            log(`Capturing image...`);
         })
         .catch(error => {
-            logDisplay.appendChild(document.createTextNode(`Error encountered while taking photo!\n${JSON.stringify(error, null, 4)}`));
-            logDisplay.appendChild(document.createElement('br'));
+            log(`Error encountered while taking photo!\n${JSON.stringify(error, null, 4)}`);
         })
         .finally(() => {
             cameraBtn.setAttribute('disabled', false);
         });
+}
+
+function log(text) {
+    logDisplay.appendChild(document.createTextNode(`${text}`));
+    logDisplay.appendChild(document.createElement('br'));
 }
 
 document
