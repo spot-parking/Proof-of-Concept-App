@@ -1,25 +1,67 @@
-const licensePlateRecognitionUtil = require('./lib/util/license-plate-recognition');
+'use strict';
+
+const fs = require('fs');
+const Boom = require('boom');
+const Hapi = require('hapi');
 const path = require('path');
+const streamToPromise = require('stream-to-promise');
+const uuid = require('uuid/v4');
 
-licensePlateRecognitionUtil
-    .start()
-    .then(() => {
-        return licensePlateRecognitionUtil
-            .processImage(path.join(__dirname, `lp-1.jpg`));
-    })
-    .then(result => {
-        console.log(`RESULT 1: ${JSON.stringify(result, null, 4)}`);
+const licensePlateRecognitionUtil = require('./lib/util/license-plate-recognition');
 
-        return licensePlateRecognitionUtil
-            .processImage(path.join(__dirname, `lp-2.jpg`));
-    })
-    .then(result => {
-        console.log(`RESULT 2: ${JSON.stringify(result, null, 4)}`);
+const server = Hapi.server({ port: 3000, host: 'localhost' });
 
-        return licensePlateRecognitionUtil.stop();
-    })
-    .then(() => {
-        console.log(`Server stopped.`);
+server.route({
+    method: 'POST',
+    path: '/lpr',
+    config: {
+        payload: {
+            output: 'stream',
+            parse: true,
+            allow: 'multipart/form-data'
+        },
+
+        handler: (request) => {
+            let data = request.payload;
+            
+            if (data.file != null) {
+                let fileName = data.file.hapi.filename;
+                let filePath = path.join(__dirname, "/lpr-uploads/", uuid());
+
+                fs.mkdirSync(filePath);
+
+                filePath = path.join(filePath, fileName);
+
+                const file = fs.createWriteStream(filePath);
+
+                const promise = streamToPromise(file)
+                    .then(() => {
+                        return licensePlateRecognitionUtil
+                            .processImage(filePath)
+                    })
+                    .catch(error => {
+                        throw Boom.badData(error);
+                    });
+
+                data.file.pipe(file);
+
+                return promise;
+            }
+        }
+    }
+});
+
+async function bootstrap() {
+    await licensePlateRecognitionUtil.start();
+
+    await server.start();
+
+    console.log(`Server running at: ${server.info.uri}`);
+}
+
+bootstrap()
+    .catch(error => {
+        console.log(`Error: ${JSON.stringify(error, null, 4)}`);
     });
 
 
