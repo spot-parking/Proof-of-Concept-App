@@ -23,6 +23,8 @@ server.route({
 
         handler: (request) => {
             let data = request.payload;
+
+            console.log(`data: ${JSON.stringify(data, null, 4)}`);
             
             if (data.file != null) {
                 let fileName = data.file.hapi.filename;
