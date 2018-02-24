@@ -15,13 +15,15 @@ function triggerCamera() {
 
     log(`Capturing image...`);
 
+    const filename = `${ __dirname }/${  moment().format('x') }.jpg`;
+
     camera
-        .snapPhoto(moment().format('x'))
+        .snapPhoto(filename)
         .then(imageBuffer => {
             log(`Captured image, sending to cloud for analysis...`);
             // imageDisplay.setAttribute('src', `data:image/jpeg;base64,${imageBuffer.toString('base64')}`);
             // TODO Send to cloud.
-            return getLicensePlate(imageBuffer);
+            return getLicensePlate(filename, imageBuffer);
         })
         .then(result => {
             cameraBtn.removeAttribute('disabled');
@@ -32,7 +34,14 @@ function triggerCamera() {
         });
 }
 
-function getLicensePlate(imageBuffer) {
+function getLicensePlate(filename, imageBuffer) {
+    const formData = {
+        image: {
+            filename,
+            contentType: `image/jpeg`
+        }
+    };
+
     // request
     return new Promise((resolve, reject) => {
         log(`Image Buffer : ${imageBuffer}`);
