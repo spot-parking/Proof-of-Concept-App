@@ -2,6 +2,8 @@
 // be executed in the renderer process for that window.
 // All of the Node.js APIs are available in this process.
 const camera = require('./lib/util/camera.js');
+const moment = require('moment';
+const Promise = require('bluebird');
 const request = require('request-promise');
 
 const cameraBtn = document.querySelector('#camera-btn');
@@ -14,11 +16,14 @@ function triggerCamera() {
     log(`Capturing image...`);
 
     camera
-        .snapPhoto()
+        .snapPhoto(moment().format('x'))
         .then(imageBuffer => {
             log(`Captured image, sending to cloud for analysis...`);
             // imageDisplay.setAttribute('src', `data:image/jpeg;base64,${imageBuffer.toString('base64')}`);
             // TODO Send to cloud.
+            return getLicensePlate(imageBuffer);
+        })
+        .then(result => {
             cameraBtn.removeAttribute('disabled');
         })
         .catch(error => {
@@ -27,13 +32,18 @@ function triggerCamera() {
         });
 }
 
+function getLicensePlate(imageBuffer) {
+    // request
+    return new Promise((resolve, reject) => {
+        log(`Image Buffer : ${imageBuffer}`);
+        log(`Image Buffer JSON : ${JSON.stringify(imageBuffer, null, 4)}`);
+        resolve(true);
+    });
+}
+
 function log(text) {
     logDisplay.appendChild(document.createTextNode(`${text}`));
     logDisplay.appendChild(document.createElement('br'));
-}
-
-function getLicensePlate(imageBuffer) {
-    // request
 }
 
 document
