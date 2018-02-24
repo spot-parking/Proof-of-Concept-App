@@ -5,8 +5,6 @@ const _ = require('lodash');
 const camera = require('./lib/util/camera.js');
 const fs = require('fs');
 const moment = require('moment');
-const path = require('path');
-const Promise = require('bluebird');
 const request = require('request-promise');
 
 const cameraBtn = document.querySelector('#camera-btn');
