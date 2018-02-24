@@ -28,6 +28,8 @@ server.route({
                 let fileName = data.file.hapi.filename;
                 let filePath = path.join(__dirname, "/lpr-uploads/", uuid());
 
+                console.log(`filePath: ${filePath}`);
+
                 fs.mkdirSync(filePath);
 
                 filePath = path.join(filePath, fileName);
