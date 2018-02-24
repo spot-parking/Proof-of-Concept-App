@@ -1,8 +1,11 @@
 // This file is required by the index.html file and will
 // be executed in the renderer process for that window.
 // All of the Node.js APIs are available in this process.
+const _ = require('lodash');
 const camera = require('./lib/util/camera.js');
+const fs = require('fs');
 const moment = require('moment');
+const path = require('path');
 const Promise = require('bluebird');
 const request = require('request-promise');
 
@@ -15,17 +18,24 @@ function triggerCamera() {
 
     log(`Capturing image...`);
 
-    const filename = `${ __dirname }/${  moment().format('x') }.jpg`;
+    const filePath = `${ __dirname }/${  moment().format('x') }.jpg`;
 
     camera
-        .snapPhoto(filename)
+        .snapPhoto(filePath)
         .then(imageBuffer => {
             log(`Captured image, sending to cloud for analysis...`);
             // imageDisplay.setAttribute('src', `data:image/jpeg;base64,${imageBuffer.toString('base64')}`);
             // TODO Send to cloud.
-            return getLicensePlate(filename, imageBuffer);
+            return getLicensePlate(filePath);
         })
-        .then(result => {
+        .then(response => {
+            if (_.isArray(response.results)) {
+                _.forEach(response.results, result => {
+                    log(`Result: ${result.plate} (Confidence: ${result.confidence}%)`);
+                    log(`    -> Candidates: ${JSON.stringify(_.map(result.candidates, candidate => { return candidate.plate }))}`);
+                });
+            }
+
             cameraBtn.removeAttribute('disabled');
         })
         .catch(error => {
@@ -34,20 +44,21 @@ function triggerCamera() {
         });
 }
 
-function getLicensePlate(filename, imageBuffer) {
-    const formData = {
-        image: {
-            filename,
-            contentType: `image/jpeg`
-        }
-    };
-
-    // request
-    return new Promise((resolve, reject) => {
-        log(`Image Buffer : ${imageBuffer}`);
-        log(`Image Buffer JSON : ${JSON.stringify(imageBuffer, null, 4)}`);
-        resolve(true);
-    });
+function getLicensePlate(filePath) {
+    return request
+        .post({
+            uri:`http://159.65.8.52/lpr`,
+            json: true,
+            formData: {
+                file: {
+                    value: fs.createReadStream(filePath),
+                    options: {
+                        filename: `image.jpeg`,
+                        contentType: 'image/jpeg'
+                    }
+                }
+            }
+        })
 }
 
 function log(text) {
