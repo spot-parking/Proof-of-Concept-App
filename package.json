@@ -17,10 +17,10 @@
   "author": "GitHub",
   "license": "CC0-1.0",
   "devDependencies": {
+    "@spot-parking/node-openalpr": "^1.1.1",
     "electron": "~1.7.8"
   },
   "dependencies": {
-    "@spot-parking/node-openalpr": "^1.1.1",
     "bluebird": "^3.5.1",
     "boom": "^7.1.1",
     "hapi": "^17.2.0",
