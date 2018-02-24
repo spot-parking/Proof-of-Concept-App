@@ -50,6 +50,8 @@ server.route({
                 data.file.pipe(file);
 
                 return promise;
+            } else {
+                console.log(`data.file is null: ${JSON.stringify(data)}`);
             }
         }
     }
