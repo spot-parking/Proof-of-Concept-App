@@ -24,9 +24,9 @@ server.route({
         handler: (request) => {
             let data = request.payload;
 
-            console.log(`data: ${JSON.stringify(data, null, 4)}`);
-            
             if (data.file != null) {
+                console.log(`data.file: ${JSON.stringify(data.file, null, 4)}`);
+
                 let fileName = data.file.hapi.filename;
                 let filePath = path.join(__dirname, "/lpr-uploads/", uuid());
 
