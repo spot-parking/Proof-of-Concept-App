@@ -16,15 +16,13 @@ function triggerCamera() {
 
     log(`Capturing image...`);
 
-    const filePath = `${ __dirname }/${  moment().format('x') }.jpg`;
-
     camera
-        .snapPhoto(filePath)
+        .snapPhoto(`${  moment().format('x') }.jpg`)
         .then(imageBuffer => {
             log(`Captured image, sending to cloud for analysis...`);
             // imageDisplay.setAttribute('src', `data:image/jpeg;base64,${imageBuffer.toString('base64')}`);
             // TODO Send to cloud.
-            return getLicensePlate(filePath);
+            return getLicensePlate(imageBuffer);
         })
         .then(response => {
             if (_.isArray(response.results)) {
@@ -42,14 +40,14 @@ function triggerCamera() {
         });
 }
 
-function getLicensePlate(filePath) {
+function getLicensePlate(imageBuffer) {
     return request
         .post({
             uri:`http://159.65.8.52/lpr`,
             json: true,
             formData: {
                 file: {
-                    value: fs.createReadStream(filePath),
+                    value: imageBuffer,
                     options: {
                         filename: `image.jpeg`,
                         contentType: 'image/jpeg'
