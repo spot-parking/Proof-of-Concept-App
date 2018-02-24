@@ -17,7 +17,6 @@
   "author": "GitHub",
   "license": "CC0-1.0",
   "devDependencies": {
-    "@spot-parking/node-openalpr": "^1.1.1",
     "electron": "~1.7.8"
   },
   "dependencies": {
@@ -28,7 +27,6 @@
     "node-raspistill": "0.0.14",
     "request": "^2.83.0",
     "request-promise": "^4.2.2",
-    "stream-to-promise": "^2.2.0",
-    "uuid": "^3.2.1"
+    "stream-to-promise": "^2.2.0"
   }
 }

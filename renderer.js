@@ -2,7 +2,7 @@
 // be executed in the renderer process for that window.
 // All of the Node.js APIs are available in this process.
 const camera = require('./lib/util/camera.js');
-const moment = require('moment';
+const moment = require('moment');
 const Promise = require('bluebird');
 const request = require('request-promise');
 
