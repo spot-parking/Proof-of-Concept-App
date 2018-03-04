@@ -1,11 +1,8 @@
 'use strict';
 
-const fs = require('fs');
 const Boom = require('boom');
 const Hapi = require('hapi');
 const path = require('path');
-const streamToPromise = require('stream-to-promise');
-const uuid = require('uuid/v4');
 
 const licensePlateRecognitionUtil = require('./lib/util/license-plate-recognition');
 
@@ -16,10 +13,11 @@ server.route({
     path: '/lpr',
     config: {
         payload: {
-            output: 'stream',
+            output: 'file',
             parse: true,
             allow: 'multipart/form-data',
-            maxBytes: 10485760
+            maxBytes: 10485760,
+            uploads: `${path.join(__dirname, "/lpr-uploads/")}`
         },
 
         handler: (request) => {
@@ -28,27 +26,15 @@ server.route({
             if (data.file != null) {
                 console.log(`data.file: ${JSON.stringify(data.file, null, 4)}`);
 
-                let fileName = data.file.hapi.filename;
-                let filePath = path.join(__dirname, "/lpr-uploads/", uuid());
+                let filePath = data.file.path;
 
                 console.log(`filePath: ${filePath}`);
 
-                fs.mkdirSync(filePath);
-
-                filePath = path.join(filePath, fileName);
-
-                const file = fs.createWriteStream(filePath);
-
-                const promise = streamToPromise(file)
-                    .then(() => {
-                        return licensePlateRecognitionUtil
-                            .processImage(filePath)
-                    })
+                licensePlateRecognitionUtil
+                    .processImage(filePath)
                     .catch(error => {
                         throw Boom.badData(error);
                     });
-
-                data.file.pipe(file);
 
                 return promise;
             } else {
