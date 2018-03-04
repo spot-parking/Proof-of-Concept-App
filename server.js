@@ -30,13 +30,11 @@ server.route({
 
                 console.log(`filePath: ${filePath}`);
 
-                licensePlateRecognitionUtil
+                return licensePlateRecognitionUtil
                     .processImage(filePath)
                     .catch(error => {
                         throw Boom.badData(error);
                     });
-
-                return promise;
             } else {
                 console.log(`data.file is null: ${JSON.stringify(data)}`);
             }
