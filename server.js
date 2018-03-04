@@ -18,7 +18,8 @@ server.route({
         payload: {
             output: 'stream',
             parse: true,
-            allow: 'multipart/form-data'
+            allow: 'multipart/form-data',
+            maxBytes: 10485760
         },
 
         handler: (request) => {
